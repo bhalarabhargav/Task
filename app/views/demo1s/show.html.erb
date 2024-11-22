@@ -1,0 +1,19 @@
+     <%= render 'demo1s/header' %>
+     <p style="color: black"><%= notice %></p>
+     <table border=black border-width:thick>
+         <th><strong>Name:</strong></th>
+         <th><strong>Description:</strong></th>
+         <th><strong>Status:</strong></th>
+         <th> <strong>Action:</strong></th>
+
+         <%= render @demo1 %>
+
+<td>
+  <div style="display: flex; align-items: center; justify-content: center;">
+    <%= link_to "", edit_demo1_path(@demo1), class: "fa fa-edit btn btn-danger btn-sm" %>
+    <%= button_to "", @demo1, method: :delete, data: { confirm: "Are you sure?" }, class: "fa fa-trash btn btn-danger btn-sm" %>
+  </div>
+</td>
+
+         </tr>
+     </table>

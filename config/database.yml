@@ -1,0 +1,28 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: demo
+  pool: 5
+  host: localhost
+  username: bhargav
+  password: root
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: demo
+  pool: 5
+  username: bhargav
+  password: root
+
+
+production:
+  adapter: postgresql
+  encoding: utf8
+  database: demo
+  pool: 5
+  timeout: 5000
+  username: bhargav
+  password: root
+
+

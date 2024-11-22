@@ -1,0 +1,12 @@
+<!-- app/views/pages/index.html.erb -->
+<center>
+<% if current_user %>
+  <h1>Welcome, <%= current_user.name %></h1>
+  <%= button_to 'Log out', user_session_path(current_user), method: :delete %><br>
+<% else %>
+  <h1>Already a user click below to login</h1>
+ <h2> <%= link_to 'Login', new_user_session_path %><br></h2>
+<% end %>
+<h3>If not a user click below to signup</h3>
+<h2><%= link_to 'Signup','/users/new'%></h2>
+</center>

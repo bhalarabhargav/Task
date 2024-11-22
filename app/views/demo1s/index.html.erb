@@ -1,0 +1,22 @@
+<%= render 'demo1s/header' %>
+<p style="color: black"><%= notice %></p>
+<h1 style= "text-align:center ;">Task</h1>
+
+<table border=black> 
+    <th><strong>Name:</strong></th>
+    <th><strong>Description:</strong></th>
+    <th><strong>Status:</strong></th>
+    <th><strong>Action:</strong></th>
+    
+  
+ <div id="demo1s">
+  <% @demo1s.each do |demo1| %>
+    <%= render demo1 %>
+    <td> <%= link_to "Show this Data", demo1 %></td> 
+    </tr>
+  <% end %>
+  </table>
+ </div>
+ 
+
+
