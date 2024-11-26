@@ -2,7 +2,7 @@
 <p style="color: black"><%= notice %></p>
 <h1 style= "text-align:center ;">Task</h1>
 
-<table border=black> 
+<table border=black class="table table-dark table-bordered text-center"> 
     <th><strong>Name:</strong></th>
     <th><strong>Description:</strong></th>
     <th><strong>Status:</strong></th>
@@ -17,6 +17,12 @@
   <% end %>
   </table>
  </div>
- 
+
+
+  <%= link_to "New Task", new_demo1_path, class:"btn btn-secondary", style:"--bs-btn-color: var(--bs-black);
+    padding: 10px 20px;
+    font-size: 20px;
+    border-radius: 10px;"%>
+
 
 
