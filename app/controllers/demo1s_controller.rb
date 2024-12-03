@@ -3,7 +3,7 @@ class Demo1sController < ApplicationController
 
   # GET /demo1s or /demo1s.json
   def index
-    @demo1s = Demo1.all
+    @demo1s = Demo1.page(params[:page]).per(5)
   end
 
   # GET /demo1s/1 or /demo1s/1.json

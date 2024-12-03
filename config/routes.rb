@@ -9,5 +9,5 @@ Rails.application.routes.draw do
   resources :demo1, only: [:new]
   get 'user_sessions/new'
   get 'user_sessions/create'
-  get 'pages/secret'
+  
 end

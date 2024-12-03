@@ -21,6 +21,9 @@ gem "importmap-rails"
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem 'turbo-rails'
 
+# To apply the Pagination this gem was installed 
+gem "kaminari"
+gem "kaminari-bootstrap"
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
