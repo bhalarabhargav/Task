@@ -1,0 +1,22 @@
+<%= render 'demo1s/header' %>
+<h1 style="text-align:center; margin-top:100px">Upload files</h1>
+
+<div style="text-align:center;">
+<%= form_with(model: @folder, local: true) do |form| %>
+  <div class="field">
+
+    <h2> <%= form.label :title, style: "display: block" %></h2>
+    <%= form.text_field :title, style: "width: 300px; height: 30px;"%>
+  </div>
+
+  <div class="field">
+    <%= form.label :file, style: "display: block" %></h2>
+    <%= form.file_field :file, style:"display:block position:center" %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit 'Upload' %>
+  </div>
+<% end %>
+</div>
+</div>

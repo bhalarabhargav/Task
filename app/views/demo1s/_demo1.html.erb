@@ -1,7 +1,37 @@
+<% @demo1 = demo1 %>
 <tr>
   <div id="<%= dom_id demo1 %>">
     <td><%= demo1.name %></td>
     <td><%= demo1.description %></td>
     <td><%= demo1.status %></td>
+    <td><%= demo1.country %></td>
+    <td><%= demo1.state %></td>
+    <td><%= demo1.city %></td>
+    <td>
+      <p>
+       
+  <% if @demo1.file.attached? %>
+    <% case @demo1.file.content_type %>
+    <% when /^image\// %>
+      <!-- Display image preview -->
+      <%= image_tag url_for(@demo1.file), style: "max-width: 200px; max-height: 200px;" %>
+    <% when "application/pdf" %>
+      <!-- Provide a link to view the PDF -->
+      <%= link_to "View PDF", file_preview_demo1_path(@demo1), target: "_blank" %>
+    <% when "text/plain" %>
+      <!-- Display text file contents -->
+      <pre><%= @demo1.file.download %></pre>
+    <% else %>
+      <!-- For unsupported file types, provide a download link -->
+      <%= link_to "Download File", url_for(@demo1.file), target: "_blank" %>
+    <% end %>
+  <% else %>
+    <p>No file uploaded.</p>
+  <% end %>
+      </p>
+     </td>
+
+
+  
 
  

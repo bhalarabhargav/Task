@@ -21,6 +21,7 @@ gem "importmap-rails"
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem 'turbo-rails'
 
+
 # To apply the Pagination this gem was installed 
 gem "kaminari"
 gem "kaminari-bootstrap"
@@ -84,3 +85,7 @@ gem "cssbundling-rails", "~> 1.4"
 gem 'bootstrap-sass'
 
 gem "jsbundling-rails", "~> 1.3"
+
+gem 'countries'
+
+gem "city-state", "~> 1.1"

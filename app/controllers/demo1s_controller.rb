@@ -1,6 +1,8 @@
 class Demo1sController < ApplicationController
   before_action :set_demo1, only: %i[ show edit update destroy ]
 
+
+
   # GET /demo1s or /demo1s.json
   def index
     @demo1s = Demo1.page(params[:page]).per(5)
@@ -8,13 +10,15 @@ class Demo1sController < ApplicationController
 
   # GET /demo1s/1 or /demo1s/1.json
   def show
+    @demo1 = Demo1.find(params[:id])
+   
   end
 
   # GET /demo1s/new
   def new
     @demo1 = Demo1.new
   end
-
+  
   # GET /demo1s/1/edit
   def edit
   end
@@ -57,8 +61,40 @@ class Demo1sController < ApplicationController
     end
   end
 
-  def loginform
+ 
+  
+  def states
+    country = params[:country]
+    if country.present?
+      states = CS.states(country.to_sym).map { |key, name| { key: key.to_s, name: name } }
+      render json: { states: states }
+    else
+      render json: { states: [] }
+    end
   end
+  
+  
+  
+
+  
+  def cities
+    state = params[:state]
+    country = params[:country]
+  
+    if state.present? && country.present?
+      cities = CS.cities(state.to_sym, country.to_sym).map { |city| { key: city.to_s, name: city } }
+      render json: { cities: cities }
+    else
+      render json: { cities: [] }
+    end
+  end
+  
+  
+  
+  
+  
+  
+  
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -68,7 +104,7 @@ class Demo1sController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def demo1_params
-      params.require(:demo1).permit(:name, :description, :status)
+      params.require(:demo1).permit(:name, :description,:country, :state, :city, :status, :file)
     end
 
 end

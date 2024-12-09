@@ -1,0 +1,9 @@
+<div style= "text-align:center; margin-top:100px">
+<%= render 'demo1s/header' %>
+
+<h1><%= @folder.title %></h1>
+
+<p>
+  <%= link_to 'Download file', rails_blob_path(@folder.file, disposition: "attachment") %>
+</p>
+</div>
