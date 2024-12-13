@@ -3,9 +3,19 @@
   <head>
     <title>Task1</title>
     <%= javascript_importmap_tags %>
-<%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+     <!-- Include Select2 CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
-<%= javascript_include_tag 'dynamic_city_dropdown' %>
+  <!-- Include jQuery (required for Select2) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include Select2 JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<%= javascript_include_tag 'https://code.jquery.com/jquery-3.6.4.min.js', integrity: 'sha384-oT9ij9xlgE2+twk9yQ1kGsm+J8/jpvhjyoLd4Mm7d6kOl5qItKyo5R4c7J3OM1gN', crossorigin: 'anonymous' %>
+<%= javascript_include_tag "application", "data-turbo-track": "reload" %>
+
+
 
 
 
@@ -20,7 +30,7 @@
     <!-- Font Awesome (Optional for Icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  
   </head>
   <body>
   

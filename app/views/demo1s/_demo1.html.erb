@@ -1,4 +1,6 @@
+
 <% @demo1 = demo1 %>
+
 <tr>
   <div id="<%= dom_id demo1 %>">
     <td><%= demo1.name %></td>
@@ -9,25 +11,42 @@
     <td><%= demo1.city %></td>
     <td>
       <p>
-       
-  <% if @demo1.file.attached? %>
-    <% case @demo1.file.content_type %>
-    <% when /^image\// %>
-      <!-- Display image preview -->
-      <%= image_tag url_for(@demo1.file), style: "max-width: 200px; max-height: 200px;" %>
-    <% when "application/pdf" %>
-      <!-- Provide a link to view the PDF -->
-      <%= link_to "View PDF", file_preview_demo1_path(@demo1), target: "_blank" %>
-    <% when "text/plain" %>
-      <!-- Display text file contents -->
-      <pre><%= @demo1.file.download %></pre>
-    <% else %>
-      <!-- For unsupported file types, provide a download link -->
-      <%= link_to "Download File", url_for(@demo1.file), target: "_blank" %>
+<% if @demo1.files.attached? %>
+  <ul>
+    <% @demo1.files.each do |file| %>
+      <li>
+      
+        <strong><%= file.filename %></strong> 
+        (<%= number_to_human_size(file.byte_size) %>) <!-- File size -->
+
+        <% case file.content_type %>
+        <% when /^image\// %>
+          <!-- Image preview -->
+          <div>
+            <%= image_tag url_for(file), style: "max-width: 300px; max-height: 300px;" %>
+          </div>
+        <% when "application/pdf" %>
+          <!-- PDF preview or download link -->
+          <div>
+            <%= link_to "View PDF", url_for(file), target: "_blank" %>
+          </div>
+        <% when "text/plain" %>
+          <!-- Display text file contents -->
+          <div>
+            <pre><%= file.download %></pre>
+          </div>
+        <% else %>
+          <!-- For unsupported file types -->
+          <div>
+            <%= link_to "Download File", url_for(file), class: "btn btn-primary", target: "_blank" %>
+          </div>
+        <% end %>
+      </li>
     <% end %>
-  <% else %>
-    <p>No file uploaded.</p>
-  <% end %>
+  </ul>
+<% else %>
+  <p>No files uploaded.</p>
+<% end %>
       </p>
      </td>
 

@@ -1,26 +1,37 @@
 // Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
+
+//= require rails-ujs
+//= require_tree .
+
 import { application } from "./application";
 import * as bootstrap from "bootstrap"
 import "bootstrap"
 import "../stylesheets/application"
-import "./controllers";
-import "./state_select"
+import "controllers";
+import "@hotwired/turbo-rails"
+
+import $ from "jquery"
+require("@rails/ujs").start();
+require("turbolinks").start(); // For Turbo
+require("channels");
+
+
+
+
+$(document).on("turbo:load", function() {
+  console.log("Turbo: JavaScript loaded"); // Debug
+});
+
 import FilePreviewController from "./file_preview_controller";
 application.register("file-preview", FilePreviewController);
-import './dynamic_city_dropdown';  // Add this line to import your custom JS
+
+console.log("Script loaded successfully");
+
+typeof Turbo
+Turbo.setProgressBarDelay(0);
+Turbo.logger = console;
 
 
-//= require bootstrap-sprockets
-stateSelect.addEventListener("change", async function () {
-  const selectedState = stateSelect.value;
-  console.log("Selected state:", selectedState);
-
-  if (selectedState) {
-    const response = await fetch(`/cities?state=${selectedState}`);
-    const data = await response.json();
-    console.log("Fetched cities data:", data); // Debug fetched data
-  }
-});
 
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -28,23 +28,67 @@
       <%= form.select :country, demo1.countries.invert, { include_blank: true }, { id: "country-select" } %>
     </div><br>
 
+<%if new == true %>
     <div>
       <h2><%= form.label :state, "State", style: "display: block" %></h2>
-      <%= form.select :state, demo1.states.invert, { include_blank: true }, { id: "state-select" } %>
+      <%= form.select :state, demo1.states, { include_blank: true }, { id: "state-select" } %>
     </div>
     <br>
+<% elsif new == false %>
+<div>
+      <h2><%= form.label :state, "State", style: "display: block" %></h2>
+      <%= form.select :state, demo1&.states != [] ? demo1&.states.invert : [], { include_blank: true }, { id: "state-select" } %>
+    </div>
+    <br>
+<% else %>
+<div>
+      <h2><%= form.label :state, "State", style: "display: block" %></h2>
+      <%= form.select :state, demo1.states, { include_blank: true }, { id: "state-select" } %>
+    </div>
+    <br>
+<% end %> 
     <div>
       <h2><%= form.label :city, "City", style: "display: block" %></h2>
       <%= form.select :city, demo1.cities, { include_blank: true }, { id: "city-select" } %>
     </div>
     <br>
+
    
     <div>
       <h2><%= form.label :file, "Upload File", style: "display: block" %></h2>
-      <%= form.file_field :file, id: "file-upload" %>
+      <%= form.file_field :files, multiple: true, id: 'file-upload' %>
     </div>
+<% if new == false %>       
+           <!-- Existing File Previews -->
+                        <h3>Existing Files:</h3>
+              <div id="existing-file-container">
+                <% if demo1.files.attached? %>
+                  <% demo1.files.each do |file| %>
+                    <div class="existing-file">
+                      <% case file.content_type %>
+                      <% when /^image\// %>
+                        <%= image_tag url_for(file), style: "max-width: 100px; margin-right: 10px;" %>
+                      <% when "application/pdf" %>
+                        <%= link_to "View PDF", url_for(file), target: "_blank" %>
+                      <% else %>
+                        <%= link_to file.filename, url_for(file), target: "_blank" %>
+                      <% end %>
 
-    <div id="file-preview"></div> <!-- Placeholder for file preview -->
+                      <!-- Delete file link -->
+                      <%= link_to "Delete File", delete_file_demo1_path(demo1, file_id: file.id), method: :delete, data: { confirm: "Are you sure you want to delete this file?" } %>
+
+                    </div>
+                  <% end %>
+                <% else %>
+                  <p>No files uploaded.</p>
+                <% end %>
+              </div>
+
+
+<% end %>
+
+    <!-- Preview container -->
+    <div id="file-preview-container"></div>
 
     <div>
       <h2><%= form.label :status, style: "display: block" %></h2>
@@ -58,100 +102,184 @@
 </div>
 
 <script>
+
+// file preview code 
 document.addEventListener("DOMContentLoaded", function () {
-  // Get the dropdown elements
-  const countrySelect = document.getElementById("country-select");
-  const stateSelect = document.getElementById("state-select");
+  const fileInput = document.getElementById("file-upload");
+  const previewContainer = document.getElementById("file-preview-container");
 
-  if (!countrySelect || !stateSelect) {
-    console.error("Country or State select element not found.");
-    return;
-  }
+  // Handle file input change (when files are selected)
+  fileInput.addEventListener("change", function () {
+    previewContainer.innerHTML = ""; // Clear existing previews
 
-  // Add change event listener to the country dropdown
-  countrySelect.addEventListener("change", async function () {
-    const selectedCountry = countrySelect.value; // Get selected country value
-    console.log("Selected country:", selectedCountry);
+    const files = fileInput.files;
 
-    // Clear the state dropdown
-    stateSelect.innerHTML = '<option value="">Select a State</option>';
-
-    if (selectedCountry) {
-      try {
-        // Fetch states from the backend for the selected country
-        const response = await fetch(`/states?country=${selectedCountry}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-        const data = await response.json(); // Parse JSON response
-        console.log("Fetched states data:", data);
-
-        // Populate the state dropdown with new options
-        if (data.states && Array.isArray(data.states)) {
-          data.states.forEach((state) => {
-            const option = document.createElement("option");
-            option.value = state.key; // Use short-form key
-            option.textContent = state.name; // Display full name
-            stateSelect.appendChild(option);
-          });
-        } else {
-          const noStatesOption = document.createElement("option");
-          noStatesOption.textContent = "No states available";
-          noStatesOption.value = "";
-          stateSelect.appendChild(noStatesOption);
-        }
-      } catch (error) {
-        console.error("Error fetching states:", error);
-      }
-    }
-  });
-
-  // Add change event listener to the state dropdown
-  stateSelect.addEventListener("change", async function () {
-    const selectedState = stateSelect.value; // Get selected state value
-    
-    const selectedCountry = countrySelect.value; // Get selected country value
-
-    console.log("Selected state:", selectedState);
-    console.log("Selected country:", selectedCountry);
-
-    const citySelect = document.getElementById("city-select");
-    if (!citySelect) {
-      console.error("City select element not found.");
-      return;
-    }
-
-    // Clear the city dropdown
-    citySelect.innerHTML = '<option value="">Select a City</option>';
-
-    if (selectedState && selectedCountry) {
-      try {
+    // Iterate over selected files and display previews
+    Array.from(files).forEach(file => {
+      const fileType = file.type;
+      const fileReader = new FileReader();
       
-        // Fetch cities from the backend for the selected state and country
-        const response = await fetch(`/cities?state=${selectedState}&country=${selectedCountry}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const fileWrapper = document.createElement('div');
+      fileWrapper.style.marginBottom = "10px";
 
-        const data = await response.json(); // Parse JSON response
-        console.log("Fetched cities data:", data);
-
-        // Populate the city dropdown with new options
-        if (data.cities && Array.isArray(data.cities)) {
-          data.cities.forEach((city) => {
-            const option = document.createElement("option");
-            option.value = city.key; // Use the key for the value
-            option.textContent = city.name; // Use the name for display
-            citySelect.appendChild(option);
-          });
-        } else {
-          const noCitiesOption = document.createElement("option");
-          noCitiesOption.textContent = "No cities available";
-          noCitiesOption.value = "";
-          citySelect.appendChild(noCitiesOption);
-        }
-      } catch (error) {
-        console.error("Error fetching cities:", error);
+      // Handle image files
+      if (fileType.startsWith('image/')) {
+        fileReader.onload = function (e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.style.maxWidth = "100px"; // Set a max width for image preview
+          img.style.marginRight = "10px";
+          
+          fileWrapper.appendChild(img);
+          previewContainer.appendChild(fileWrapper);
+        };
+        fileReader.readAsDataURL(file);
+      } 
+      // Handle PDF files
+      else if (fileType === 'application/pdf') {
+        const icon = document.createElement("img");
+        icon.src = "pdf-icon.png"; // Use a PDF icon image
+        icon.style.maxWidth = "50px";
+        fileWrapper.appendChild(icon);
+        const name = document.createElement("span");
+        name.textContent = file.name;
+        fileWrapper.appendChild(name);
+        previewContainer.appendChild(fileWrapper);
       }
-    }
+      // Handle other file types (like text, word, etc.)
+      else {
+        const icon = document.createElement("img");
+        icon.src = "file-icon.png"; // Use a generic file icon
+        icon.style.maxWidth = "50px";
+        fileWrapper.appendChild(icon);
+        const name = document.createElement("span");
+        name.textContent = file.name;
+        fileWrapper.appendChild(name);
+        previewContainer.appendChild(fileWrapper);
+      }
+    });
   });
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const countrySelect = $("#country-select");
+  const stateSelect = $("#state-select");
+  const citySelect = $("#city-select");
+
+  console.log("Dropdown elements initialized:", countrySelect, stateSelect, citySelect);
+
+countrySelect.select2({
+  placeholder: "Select a Country",
+  allowClear: true,
+  width: '20%',
+  ajax: {
+    url: '/countries', // Backend endpoint for fetching countries
+    dataType: 'json',
+    delay: 250, // Wait 250ms before sending request
+    data: function (params) {
+      return {
+        search: params.term || '', // Pass the search term to the backend
+        page: params.page || 1,   // Current page number
+        limit: 10                 // Number of countries per page
+      };
+    },
+    processResults: function (data) {
+      return {
+        results: data.countries.map(country => ({
+          id: country.key, // Use `key` from the backend
+          text: country.name // Display the country's name
+        })),
+        pagination: {
+          more: data.page * 10 < data.total // Check if more results are available
+        }
+      };
+    },
+    cache: true
+  }
+});
+
+
+
+  // Initialize select2 for better dropdown functionality
+stateSelect.select2({
+  placeholder: "Select a State",
+  allowClear: true,
+  width: '20%',
+  ajax: {
+    url: '/states', // Backend endpoint for fetching states
+    dataType: 'json',
+    delay: 250, // Wait 250ms before sending request
+    data: function (params) {
+      return {
+        country: countrySelect.val(), // Pass selected country
+        search: params.term || '',    // Pass search term
+        page: params.page || 1,       // Current page number
+        limit: 10                     // Number of states per page
+      };
+    },
+    processResults: function (data) {
+      return {
+        results: data.states.map(state => ({
+          id: state.key, // Use `key` from the backend
+          text: state.name // Display the state's name
+        })),
+        pagination: {
+          more: data.page * 10 < data.total // Check if more results are available
+        }
+      };
+    },
+    cache: true
+  }
+});
+
+
+citySelect.select2({
+  placeholder: "Select a City",
+  allowClear: true,
+  width: '20%',
+  ajax: {
+    url: '/cities', // Backend endpoint for fetching cities
+    dataType: 'json',
+    delay: 250, // Wait 250ms before sending request
+    data: function (params) {
+      return {
+        country: countrySelect.val(), // Pass selected country
+        state: stateSelect.val(),     // Pass selected state
+        search: params.term || '',    // Pass search term
+        page: params.page || 1,       // Current page number
+        limit: 10                     // Number of cities per page
+      };
+    },
+    processResults: function (data) {
+      return {
+        results: data.cities.map(city => ({
+          id: city.key, // Use `key` from the backend
+          text: city.name // Display the city's name
+        })),
+        pagination: {
+          more: data.page * 10 < data.total // Check if more results are available
+        }
+      };
+    },
+    cache: true
+  }
+});
+
+
+  // Reset state and city dropdowns when the country changes
+  countrySelect.on("change", function () {
+    stateSelect.val(null).trigger('change');
+    citySelect.val(null).trigger('change');
+  });
+
+  // Reset city dropdown when the state changes
+  stateSelect.on("change", function () {
+    citySelect.val(null).trigger('change');
+  });
+});
+
+
+
 
 </script>

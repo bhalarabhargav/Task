@@ -3,7 +3,8 @@
 <%= render 'demo1s/header' %>
 <h1 style= "text-align:center; margin-top:100px">New Data</h1>
 
-<%= render "form", demo1: @demo1 %>
+
+<%= render partial: 'form', locals: { demo1:@demo1, form_method: :post, new:true } %>
 
 <br>
 

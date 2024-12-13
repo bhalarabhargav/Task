@@ -1,0 +1,48 @@
+<% demo1s.each do |demo1| %>
+  <tr>
+    <td><%= demo1.name %></td>
+    <td><%= demo1.description %></td>
+    <td><%= demo1.status %></td>
+    <td><%= demo1.country %></td>
+    <td><%= demo1.state %></td>
+    <td><%= demo1.city %></td>
+    <td>
+      <% if demo1.files.attached? %>
+        <ul>
+          <% demo1.files.each do |file| %>
+            <li>
+              <strong><%= file.filename %></strong>
+              (<%= number_to_human_size(file.byte_size) %>)
+                            <% case file.content_type %>
+                        <% when /^image\// %>
+                        <!-- Image preview -->
+                        <div>
+                            <%= image_tag url_for(file), style: "max-width: 300px; max-height: 300px;" %>
+                        </div>
+                        <% when "application/pdf" %>
+                        <!-- PDF preview or download link -->
+                        <div>
+                            <%= link_to "View PDF", url_for(file), target: "_blank" %>
+                        </div>
+                        <% when "text/plain" %>
+                        <!-- Display text file contents -->
+                        <div>
+                            <pre><%= file.download %></pre>
+                        </div>
+                        <% else %>
+                        <!-- For unsupported file types -->
+                        <div>
+                            <%= link_to "Download File", url_for(file), class: "btn btn-primary", target: "_blank" %>
+                        </div>
+                        <% end %>
+          </li>
+          <% end %>
+        </ul>
+      <% else %>
+        No files uploaded.
+      <% end %>
+    </td>
+    <td><%= link_to "Show this Data", demo1 %></td>
+  </tr>
+<% end %>
+  
